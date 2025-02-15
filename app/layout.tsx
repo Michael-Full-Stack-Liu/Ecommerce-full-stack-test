@@ -1,34 +1,45 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/layout/header";
+import { Toaster } from "sonner";
+import { SanityLive } from "@/sanity/lib/live";
+import { auth } from "@/auth";
+import HeaderCategorySelector from "@/components/layout/HeaderCategorySelector";
+import Cart from "@/components/cart/Cart";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+
+const inter = Inter({subsets:["latin"]})
 
 export const metadata: Metadata = {
   title: "Full Stack Temu like ecommerce",
-  description: "Use Next js, React, AUth js, Prisma, Zustand, Zod, Stripe",
+  description: "Use Next js, React, AUth js, Prisma, Zustand, Sanity, Stripe",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await auth()
+
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${inter.className} w-full antialiased min-h-[200vh]`}>
+        
+
+        <main className="w-full">
+        <Header user={user} categorySelector={<HeaderCategorySelector />}/>
+        
         {children}
+        </main>
+        <Cart />
+        <Toaster />
+        <SanityLive />
       </body>
+      
     </html>
+      
   );
 }
