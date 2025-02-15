@@ -1,4 +1,4 @@
-import SignUp from "@/components/auth/signUp";
+// import SignUp from "@/components/auth/signUp";
 import AddToCart from "@/components/cartAction/addToCart";
 import RemoveFromYourCart from "@/components/cartAction/removeFromYourCart";
 import SalesCampaignBanner from "@/components/layout/salesCampaignBanner";
