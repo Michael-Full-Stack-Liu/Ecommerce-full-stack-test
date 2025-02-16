@@ -6,7 +6,7 @@ import { auth } from '@/auth';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-12-18.acacia'
+    apiVersion: '2025-01-27.acacia'
 });
 
 export const createCheckoutSession = async (cartId: string) => {
@@ -15,30 +15,32 @@ export const createCheckoutSession = async (cartId: string) => {
 
     if(cart.items.length === 0) {
         throw new Error('Cart is empty');
-    }
+    };
 
     const totalPrice = cart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
-    console.log(cart.items.map((item) => item.title))
+    console.log(cart.items.map((item) => item.title));
 
     const session = await stripe.checkout.sessions.create({
-        mode: 'payment',
-        line_items: cart.items.map((item) => ({
-            price_data: {
-                currency: 'usd',
-                product_data: {
-                    name: item.title,
-                    images: [item.image]
+        mode: "payment",
+        line_items: 
+            cart.items.map((item) => ({
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: item.title,
+                        images: [item.image]
+                    },
+                    unit_amount: Math.round(item.price * 100),
                 },
-                unit_amount: Math.round(item.price * 100)
-            },
-            quantity: item.quantity,
+                quantity: item.quantity,
         })),
-        success_url: `${process.env.NEXT_PUBLIC_BASE_URL!}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL!}`,
-        customer_email: user?.user?.email,
+        
+        success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}`,
+        customer: user?.user?.email || undefined,
         metadata: {
-            cartId: cart.id,
+            cartId: cart.id.toString(),
             userId: user?.user?.id?.toString() || '-'
         },
         shipping_address_collection: {
@@ -50,7 +52,7 @@ export const createCheckoutSession = async (cartId: string) => {
                     type: 'fixed_amount',
                     fixed_amount: {
                         currency: 'usd',
-                        amount: totalPrice >= 15 ? 0 : 5 * 100 // $5.00 USD
+                        amount: totalPrice >= 15 ? 0 : 500 // $5.00 USD
                     },
                     display_name: totalPrice >= 15 ? 'Free Shipping' : 'Shipping',
                     delivery_estimate: {
@@ -62,10 +64,10 @@ export const createCheckoutSession = async (cartId: string) => {
                             unit: 'business_day',
                             value: 5
                         },
-                    }
-                }
-            }
-        ]
+                    },
+                },
+            },
+        ],
     });
 
     if(!session.url) {

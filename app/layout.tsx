@@ -30,7 +30,7 @@ export default async function RootLayout({
         
 
         <main className="w-full">
-        <Header user={user} categorySelector={<HeaderCategorySelector />}/>
+        <Header user={String(user?.user?.id)} categorySelector={<HeaderCategorySelector />}/>
         
         {children}
         </main>
