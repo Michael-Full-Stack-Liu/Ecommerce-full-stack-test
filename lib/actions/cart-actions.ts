@@ -5,6 +5,7 @@ import { prisma } from "@/lib/actions/prisma"
 import { Product } from "@/sanity.types";
 import { urlFor } from "@/sanity/lib/image";
 import { revalidatePath } from "next/cache";
+import { ItemProps } from "sanity";
 
 
 export const createCart = async () => {
@@ -77,7 +78,7 @@ export const updateCartItem = async (
     const cart = await getOrCreateCart(cartId);
 
     const existingItem = cart.items.find(
-        (item) => sanityProductId === item.sanityProductId
+        (item:any) => sanityProductId === item.sanityProductId
     );
 
     if(existingItem) {
