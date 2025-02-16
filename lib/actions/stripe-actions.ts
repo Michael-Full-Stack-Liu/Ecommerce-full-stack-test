@@ -19,12 +19,12 @@ export const createCheckoutSession = async (cartId: string) => {
 
     const totalPrice = cart.items.reduce((acc:number, item:any) => acc + (item.price * item.quantity), 0);
 
-    console.log(cart.items.map((item) => item.title));
+    console.log(cart.items.map((item:any) => item.title));
 
     const session = await stripe.checkout.sessions.create({
         mode: "payment",
         line_items: 
-            cart.items.map((item) => ({
+            cart.items.map((item:any) => ({
                 price_data: {
                     currency: 'usd',
                     product_data: {
