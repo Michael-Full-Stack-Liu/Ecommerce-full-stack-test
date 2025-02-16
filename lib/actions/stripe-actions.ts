@@ -17,7 +17,7 @@ export const createCheckoutSession = async (cartId: string) => {
         throw new Error('Cart is empty');
     };
 
-    const totalPrice = cart.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    const totalPrice = cart.items.reduce((acc:number, item:any) => acc + (item.price * item.quantity), 0);
 
     console.log(cart.items.map((item) => item.title));
 
